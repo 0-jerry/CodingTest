@@ -16,8 +16,8 @@ func solution(_ clothes:[[String]]) -> Int {
     var countOfStyle = 1
 
     //옷 종류별 (count + 1) 곱한다 ( +1 : 입지 않은 경우 ) 
-    clothesDict.keys.forEach {
-       countOfStyle = countOfStyle * (clothesDict[$0, default: []].count + 1)
+    clothesDict.values.forEach {
+       countOfStyle *= ($0.count + 1)
     }
     
     //아무것도 입지 않은 경우 제외 
