@@ -1,25 +1,32 @@
 import Foundation
 
 func solution(_ number:String, _ k:Int) -> String {
-    let numbers = number.compactMap{ Int(String($0))}
+    let size = number.count - k
+    var count = k
+    var stack: [String] = []
 
-    var sub: [Int] = []
+    number.forEach { element in
+        while true {
+            guard
+                let peek = stack.last,
+                peek < element.description else { break }
 
-    var k = k
+            if count == 0 { break }
+            count -= 1
 
-    for (i,e) in numbers.enumerated() {
-        while k>0, sub.isEmpty == false, sub.last! < e {
-            k-=1
-            sub.removeLast()
+            _ = stack.popLast()
         }
-
-        if k == 0 {
-            sub.append(contentsOf: numbers[i...])
-            break
-        } else {
-            sub.append(e)
-        }
+        stack.append(element.description)
     }
 
-    return sub[..<(sub.count-k)].map {String($0)}.joined()
+    return stack.joined()[0 ..< size]
+}
+
+extension String {
+    subscript (r: Range<Int>) -> String {
+        let start = self.index(self.startIndex, offsetBy: r.lowerBound)
+        let end = self.index(self.startIndex, offsetBy: r.upperBound)
+
+        return String(self[start ..< end])
+    }
 }
