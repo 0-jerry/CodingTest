@@ -1,20 +1,16 @@
 
 func solution(_ n:Int) -> Int {
-    var memo: [Int: Int] = [:]
-    
-    func fibonacciTopDown(_ n: Int) -> Int {
-            guard n > 1 else { 
-                    return n 
-            }
-
-            if let cached = memo[n] {
-                    return cached 
-            }
-
-            let result = (fibonacciTopDown(n - 1) + fibonacciTopDown(n - 2)) % 1234567
-            memo[n] = result
-            return result
+    guard n > 1 else {
+        return n
     }
-
-    return fibonacciTopDown(n)
+    
+    var dp = Array(repeating: 0, count: n + 1)
+    dp[0] = 0
+    dp[1] = 1
+    
+    for i in 2...n {
+        dp[i] = ( dp[i-1] + dp[i-2] ) % 1234567
+    }
+    
+    return dp[n]
 }
