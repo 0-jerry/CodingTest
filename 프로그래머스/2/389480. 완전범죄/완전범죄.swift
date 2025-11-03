@@ -1,56 +1,58 @@
 import Foundation
-/*
-DFS(index: Int, a: Int, b: Int)
-n/m 을 초과하는 경우 탐색 중단, 탐색이 끝난 경우 최솟값 비교 저장
-포지션 저장 방식? (중복 탐색 금지 및 비효율 탐색도 중단)
-    두 값 모두 이하인 값이 존재하는 경우 중단
 
-
-*/
-
-func solution(_ info:[[Int]], _ n:Int, _ m:Int) -> Int {
-    let N = info.count
-    let _n = n; let _m = m
-    let totalB = info.reduce(into: 0) { o, v in o += v[1] }
-    let isBStealAll = totalB < m
-
-    if isBStealAll {
-        return 0
-    }
-
-    var memo = [[[Int]]](
-        repeating: [[Int]](
-            repeating: [Int](
-                repeating: -1,
-                count: m
-            ),
-            count: n
-        ),
-        count: info.count
-    )
-
-    func solve(_ index: Int, _ curN: Int, _ curM: Int) -> Int {
-        if index == N {
-            return curN
-        } 
-
-        if memo[index][curN][curM] != -1 {
-            return memo[index][curN][curM]
-        }  
-
-        var mins = Int.max
-        let cur1 = info[index][1] + curM
-        if cur1 < _m {
-            mins = min(mins, solve(index + 1, curN, cur1))
+func solution(_ info: [[Int]], _ n: Int, _ m: Int) -> Int {
+    var result = Int.max
+    
+    // 💡 O(1) 조회를 위한 Set 사용
+    // Set<String>을 사용해 (index, a, b) 조합을 저장
+    // ⏱️ 조회/삽입: O(1) (평균)
+    var visited = Set<String>()
+    
+    // 💡 Pareto frontier 개념 활용
+    // 각 index에서 dominated되지 않는 (a, b) 상태만 저장
+    // ⏱️ O(P) - P는 Pareto 최적 상태 수 (일반적으로 매우 작음)
+    var paretoFrontier = [[[Int]]](repeating: [], count: info.count)
+    
+    // ⏱️ 최악: O(2^k) 하지만 실제로는 훨씬 적음
+    func dfs(_ index: Int, _ a: Int, _ b: Int) {
+        // ⏱️ O(1) - 가지치기
+        guard a < n, b < m, result > a else { return }
+        
+        // ⏱️ O(1) - 종료 조건
+        if index == info.count {
+            result = a
+            return
         }
-        let cur2 = info[index][0] + curN
-        if cur2 < _n {
-            mins = min(mins, solve(index + 1, cur2, curM))
+        
+        // ⏱️ O(1) - 중복 방문 체크 (Set 사용)
+        let key = "\(index),\(a),\(b)"
+        guard !visited.contains(key) else { return }
+        visited.insert(key)
+        
+        // ⏱️ O(P) - Pareto dominated 체크 (P는 매우 작음, 보통 < 100)
+        // 현재 상태가 다른 상태에 의해 dominated되는지 확인
+        for state in paretoFrontier[index] {
+            if state[0] <= a && state[1] <= b {
+                return  // 더 좋은 상태가 이미 존재
+            }
         }
-        memo[index][curN][curM] = mins
-        return memo[index][curN][curM]
+        
+        // Pareto frontier 업데이트
+        // 현재 상태에 의해 dominated되는 상태들 제거
+        paretoFrontier[index].removeAll { state in
+            a <= state[0] && b <= state[1]
+        }
+        paretoFrontier[index].append([a, b])
+        
+        // ⏱️ O(1) - 물건 정보
+        let item = info[index]
+        let nextIndex = index + 1
+        
+        // 재귀 호출
+        dfs(nextIndex, a + item[0], b)  // A가 가져가는 경우
+        dfs(nextIndex, a, b + item[1])  // B가 가져가는 경우
     }
-    let value = solve(0, 0, 0)
-    return value == Int.max ? -1 : value
+    
+    dfs(0, 0, 0)
+    return result == Int.max ? -1 : result
 }
-
