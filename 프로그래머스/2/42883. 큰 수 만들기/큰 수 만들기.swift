@@ -1,32 +1,21 @@
 import Foundation
 
-func solution(_ number:String, _ k:Int) -> String {
-    let size = number.count - k
-    var count = k
-    var stack: [String] = []
-
-    number.forEach { element in
-        while true {
-            guard
-                let peek = stack.last,
-                peek < element.description else { break }
-
-            if count == 0 { break }
-            count -= 1
-
-            _ = stack.popLast()
+func solution(_ number: String, _ k: Int) -> String {
+    var stack: [Character] = []
+    var flag = k
+    for char in number {
+        while let last = stack.last, last < char, flag > 0 {
+            stack.removeLast()
+            flag -= 1
         }
-        stack.append(element.description)
+        
+        stack.append(char)
     }
-
-    return stack.joined()[0 ..< size]
-}
-
-extension String {
-    subscript (r: Range<Int>) -> String {
-        let start = self.index(self.startIndex, offsetBy: r.lowerBound)
-        let end = self.index(self.startIndex, offsetBy: r.upperBound)
-
-        return String(self[start ..< end])
+    
+    if flag > 0 {
+        stack.removeLast(flag)
     }
+    
+    return String(stack)
+    
 }
