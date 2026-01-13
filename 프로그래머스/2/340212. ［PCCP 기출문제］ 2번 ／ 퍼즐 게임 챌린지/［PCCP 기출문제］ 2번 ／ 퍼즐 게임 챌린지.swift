@@ -15,7 +15,7 @@ func solution(_ diffs:[Int], _ times:[Int], _ limit:Int64) -> Int {
     
     let remainTime = limit - baseTime
     
-    func calculateTotalTime(_ level: Int) -> Int64 {
+    func calculateRetryTime(_ level: Int) -> Int64 {
         var total: Int64 = 0
         
         for i in 0..<puzzleCount {
@@ -37,9 +37,9 @@ func solution(_ diffs:[Int], _ times:[Int], _ limit:Int64) -> Int {
     
     while left <= right {
         let mid = (left + right) / 2
-        let totalTime = calculateTotalTime(mid)
+        let retryTime = calculateRetryTime(mid)
         
-        if totalTime <= remainTime {
+        if retryTime <= remainTime {
             answer = mid
             right = mid - 1
         } else {
