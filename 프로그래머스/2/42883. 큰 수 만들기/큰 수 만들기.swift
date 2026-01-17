@@ -1,19 +1,24 @@
 
-func solution(_ number: String, _ k: Int) -> String {
-    var result: [Int] = []
-    var count: Int = 0
+func solution(_ number:String, _ k:Int) -> String {
+    let numbers = number.compactMap{ $0.wholeNumberValue }
 
-    Array(number).compactMap { Int(String($0)) }.forEach { item in
-        while count < k {
-            if let last = result.last, last < item {
-                result.popLast()
-                count += 1
-            } else {
-                break
-            }
+    var sub: [Int] = []
+
+    var k = k
+
+    for (i,e) in numbers.enumerated() {
+        while k>0, sub.isEmpty == false, sub.last! < e {
+            k-=1
+            sub.removeLast()
         }
-        result.append(item)
+
+        if k == 0 {
+            sub.append(contentsOf: numbers[i...])
+            break
+        } else {
+            sub.append(e)
+        }
     }
 
-    return result[0..<(result.count - k + count)].map { "\($0)" }.joined()
+    return sub[..<(sub.count-k)].map {String($0)}.joined()
 }
