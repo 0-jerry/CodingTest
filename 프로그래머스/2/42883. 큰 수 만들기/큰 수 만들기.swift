@@ -1,21 +1,19 @@
-import Foundation
 
 func solution(_ number: String, _ k: Int) -> String {
-    var stack: [Character] = []
-    var flag = k
-    for char in number {
-        while let last = stack.last, last < char, flag > 0 {
-            stack.removeLast()
-            flag -= 1
+    var result: [Int] = []
+    var count: Int = 0
+
+    Array(number).compactMap { Int(String($0)) }.forEach { item in
+        while count < k {
+            if let last = result.last, last < item {
+                result.popLast()
+                count += 1
+            } else {
+                break
+            }
         }
-        
-        stack.append(char)
+        result.append(item)
     }
-    
-    if flag > 0 {
-        stack.removeLast(flag)
-    }
-    
-    return String(stack)
-    
+
+    return result[0..<(result.count - k + count)].map { "\($0)" }.joined()
 }
