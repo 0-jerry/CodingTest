@@ -2,14 +2,14 @@ import Foundation
 
 func solution(_ sales: [Int], _ links: [[Int]]) -> Int { 
     
-    var teams = [Set<Int>](repeating: [], count: sales.count + 1)
-    var isLeader = [Bool](repeating: false, count: sales.count + 1)
+    var teams = [[Int]](repeating: [], count: sales.count + 1)
+    // var isLeader = [Bool](repeating: false, count: sales.count + 1)
     
     for link in links {
         let leader = link[0]
         let member = link[1]
-        teams[leader].insert(member)
-        isLeader[leader] = true
+        teams[leader].append(member)
+        // isLeader[leader] = true
     }
     
     struct TeamInfo {
@@ -23,7 +23,9 @@ func solution(_ sales: [Int], _ links: [[Int]]) -> Int {
         var subleaders = [Int]()
         
         teams[teamNumber]
-        .forEach { isLeader[$0] ? subleaders.append($0) : justMembers.append($0) }
+        .forEach { 
+            !teams[$0].isEmpty ? subleaders.append($0) : justMembers.append($0) 
+        }
         
         return TeamInfo(
             teamNumber: teamNumber, 
