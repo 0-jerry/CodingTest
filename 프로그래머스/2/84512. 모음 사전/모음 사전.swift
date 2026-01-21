@@ -2,7 +2,7 @@ import Foundation
 
 func solution(_ word: String) -> Int {
     let maxLength = 5
-    var cache = [maxLength: 1]
+    var cache = [maxLength: 1]  
     
     func dfs(_ digit: Int) -> Int {
         if let cached = cache[digit] {
@@ -14,21 +14,21 @@ func solution(_ word: String) -> Int {
             } else {
                 current = 1 + 5 * dfs(digit + 1)
             }
-            cache[digit] = current
+            cache[digit] = current 
             return current
         }
     }
     
-    let indexForAlphabet: [Character: Int] = [
-        "A": 1, 
-        "E": 2, 
-        "I": 3,
-        "O": 4, 
-        "U": 5
-    ]
+    let vowels: [Character] = ["A", "E", "I", "O", "U"]
     
-    return word.enumerated()
-    .reduce(0) { 
-        $0 + (1 + (indexForAlphabet[$1.1]! - 1) * dfs($1.0 + 1)) 
+    return word.enumerated().reduce(0) { sum, element in
+        let (index, char) = element
+        
+        guard let vowelIndex = vowels.firstIndex(of: char) else {
+            return sum
+        }
+        
+        let contribution = 1 + vowelIndex * dfs(index + 1)
+        return sum + contribution
     }
 }
