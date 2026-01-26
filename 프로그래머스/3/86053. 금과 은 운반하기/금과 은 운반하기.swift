@@ -5,16 +5,16 @@ func solution(
     _ golds: [Int], _ silvers: [Int], 
     _ weights: [Int], _ times: [Int]
 ) -> Int64 {
-    var maximumTime = 0
+    // var maximumTime = 0
     let remainMineral = remainGold + remainSilver
-    for cityID in 0..<weights.count {
-        let weight = weights[cityID]
-        let totalMineral = golds[cityID] + silvers[cityID]
-        let moveCount = (totalMineral + weight - 1) / weight
-        let current = (moveCount * 2 - 1) * times[cityID]
+//     for cityID in 0..<weights.count {
+//         let weight = weights[cityID]
+//         let totalMineral = golds[cityID] + silvers[cityID]
+//         let moveCount = (totalMineral + weight - 1) / weight
+//         let current = (moveCount * 2 - 1) * times[cityID]
 
-        maximumTime = max(maximumTime, current)
-    }
+//         maximumTime = max(maximumTime, current)
+//     }
     
     func isComplet(_ currentTime: Int) -> Bool {
         var totalGold = 0
@@ -43,7 +43,7 @@ func solution(
         return isEnoughtGold && isEnoughtSilver && isEnoughtMineral
     }
 
-    guard let targetTime = binarySearch(0, maximumTime, isComplet) else {
+    guard let targetTime = binarySearch(0, 400000 * 1000000000, isComplet) else {
         return -1
     }
     return Int64(targetTime)
