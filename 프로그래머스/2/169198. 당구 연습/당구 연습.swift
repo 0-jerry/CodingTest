@@ -44,23 +44,17 @@ func solution(_ m: Int, _ n: Int, _ startX: Int, _ startY: Int, _ balls: [[Int]]
         return (x: reflectedX, y: reflectedY)
     }
 
-    let side: [Point] = [(0, start.y), 
-                         (start.x, 0), 
-                         (last.x, start.y), 
-                         (start.x, last.y)]
+    let sideGuide: [Point] = [(0, start.y), 
+                             (start.x, 0), 
+                             (last.x, start.y), 
+                             (start.x, last.y)]
     
-    let edge: [Point] = [(0, 0), 
-                         (0, last.y), 
-                         (last.x, 0), 
-                         (last.x, last.y)]
-    
-    let reflactPoints = side + edge
-    let reflactedStart: [Point] = reflactPoints.map { reflectedPoint(start, $0) }
+    let reflactedStart: [Point] = sideGuide.map { reflectedPoint(start, $0) }
 
     func minimumDistance(_ target: Point) -> Int {
         var minimum = Int.max
-        for (index, reflactPoint) in reflactPoints.enumerated() {
-            guard !isPass(target, reflactPoint) else { continue }
+        for (index, sideGuidePoint) in sideGuide.enumerated() {
+            guard !isPass(target, sideGuidePoint) else { continue }
             let current = distance(reflactedStart[index], target)
             minimum = min(current, minimum)
         }
