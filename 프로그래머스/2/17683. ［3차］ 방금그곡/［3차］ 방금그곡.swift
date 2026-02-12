@@ -11,6 +11,8 @@ import Foundation
 
 "C, C#, D, D#, E, F, F#, G, G#, A, A#, B"
 */
+
+
 func solution(_ m: String, _ musicinfos: [String]) -> String {
     
     typealias Melody = [String]
@@ -18,23 +20,17 @@ func solution(_ m: String, _ musicinfos: [String]) -> String {
     struct MusicInfo {
         let name: String 
         let melody: Melody
-        let length: Int 
-
-        func contains(_ other: Melody) -> Bool {
-            var melodyStackCount = 0
-            let melodyCount = melody.count 
-            let otherCount = other.count
-            
-            for index in 0..<length {
-                let current = melody[index % melodyCount]
-                if other[melodyStackCount] != current { melodyStackCount = 0 }
-                if other[melodyStackCount] == current { melodyStackCount += 1 }
-                
-                guard melodyStackCount != otherCount else { break }
+        let length: Int
+        
+        func contains(_ other: String) -> Bool {
+            var fullMelody = Melody()
+            for i in 0..<length {
+                fullMelody.append(melody[i % melody.count])
             }
-            return melodyStackCount == otherCount
+            return fullMelody.joined().contains(other)
         }
     }
+    
     
     func toMelody(_ strMelody: String) -> Melody {
         var melody = Melody()
@@ -52,7 +48,13 @@ func solution(_ m: String, _ musicinfos: [String]) -> String {
             melody.append(sound)
         }
         
-        return melody
+        return melody.map {
+            if $0.hasSuffix("#"), let first = $0.first {
+                    return first.lowercased()
+            } else { 
+                return $0
+            }
+        }
     }
     
     func toMinute(_ time: String) -> Int {
@@ -64,7 +66,7 @@ func solution(_ m: String, _ musicinfos: [String]) -> String {
         return min((splited[0] * 60 + splited[1]), maximum)
     }
     
-    let remember: Melody = toMelody(m)
+    let remember = toMelody(m).joined()
 
     let sortedMusicInfos: [MusicInfo] = musicinfos
     .compactMap { musicInfo in
@@ -83,17 +85,17 @@ func solution(_ m: String, _ musicinfos: [String]) -> String {
         
         return MusicInfo(
             name: name, 
-            melody: melody, 
+            melody: melody,
             length: length
         )
     }
     .sorted { $0.length > $1.length }
-    
-    
+       
     for musicInfo in sortedMusicInfos {
-        guard musicInfo.contains(remember) else { continue }
-        return musicInfo.name 
+        if musicInfo.contains(remember) {
+            return musicInfo.name
+        }
     }
-
+    
     return "(None)"
 }
