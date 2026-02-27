@@ -1,63 +1,61 @@
 import Foundation
-/*
-n개의 노드 그래프
 
-1번에서 가장 멀리 떨어진 노드의 갯수를 구하기
-BFS - 
-*/
-func solution(_ n: Int, _ vertex: [[Int]]) -> Int {
-    var maximum = 0 
+func solution(_ n: Int, _ edge: [[Int]]) -> Int {
+
     var connected = [[Int]](repeating: [], count: n + 1)
-    var visited = [Bool](repeating: false, count: n + 1)
-    var distanceNodes = [Int: Int]()
-    for route in vertex {
-        let nodeA = route[0]
-        let nodeB = route[1]
-        connected[nodeA].append(nodeB)
-        connected[nodeB].append(nodeA)
+    var length = [Int](repeating: -1, count: n + 1)
+    
+    for connect in edge {
+        let (lhs, rhs) = (connect[0], connect[1])
+        connected[lhs].append(rhs)
+        connected[rhs].append(lhs)
     }
     
-    var queue = Queue()
-    queue.enqueue((node: 1, distance: 0))
-    visited[1] = true 
+    var maxLength = 0
+    var count = 0
+        
+    let queue = Queue<Int>()
+    length[1] = 0
+    queue.enqueue(1)
     
     while !queue.isEmpty {
-        guard let first = queue.dequeue() else { break }
+        guard let node = queue.dequeue() else { break }
         
-        let currentDistance = first.distance 
-        let nextDistance = currentDistance + 1
-        maximum = currentDistance
-        distanceNodes[currentDistance, default: 0] += 1
-        let subNodes = connected[first.node].filter { !visited[$0] }
+        let currentLength = length[node]
         
-        for subNode in subNodes {
-            visited[subNode] = true
-            queue.enqueue((subNode, nextDistance))
+        if currentLength == maxLength {
+            count += 1
+        } else {
+            count = 1 
+            maxLength = currentLength
+        }
+        
+        let nextLength = currentLength + 1
+        
+        for nextNodeIndex in connected[node] {
+            guard length[nextNodeIndex] == -1 else { continue }
             
+            length[nextNodeIndex] = nextLength
+            queue.enqueue(nextNodeIndex)
         }
     }
     
-    return distanceNodes[maximum] ?? -1
+    return count
 }
 
-class Queue {
-    typealias Pair = (node: Int, distance: Int)
+class Queue<T> {
+    var elements: [T] = []
+    private var index = 0 
+    var isEmpty: Bool { elements.count <= index }
     
-    private var index = 0
-    private var values = [Pair]()
-    
-    var isEmpty: Bool { values.count <= index }
-    
-    func enqueue(_ value: Pair) {
-        values.append(value)
+    func enqueue(_ element: T) {
+        elements.append(element)
     }
     
-    func dequeue() -> Pair? {
+    func dequeue() -> T? {
         guard !isEmpty else { return nil }
-        
-        let value = values[index]
-        index += 1 
-        
-        return value
+        let element = elements[index]
+        index += 1
+        return element
     }
 }
