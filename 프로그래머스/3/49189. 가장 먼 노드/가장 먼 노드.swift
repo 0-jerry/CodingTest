@@ -3,7 +3,7 @@ import Foundation
 func solution(_ n: Int, _ edge: [[Int]]) -> Int {
 
     var connected = [[Int]](repeating: [], count: n + 1)
-    var length = [Int](repeating: -1, count: n + 1)
+    var distance = [Int](repeating: -1, count: n + 1)
     
     for connect in edge {
         let (lhs, rhs) = (connect[0], connect[1])
@@ -11,31 +11,30 @@ func solution(_ n: Int, _ edge: [[Int]]) -> Int {
         connected[rhs].append(lhs)
     }
     
-    var maxLength = 0
+    var maxDistance = 0
     var count = 0
         
     let queue = Queue<Int>()
-    length[1] = 0
+    distance[1] = 0
     queue.enqueue(1)
     
     while !queue.isEmpty {
         guard let node = queue.dequeue() else { break }
         
-        let currentLength = length[node]
+        let currentDistance = distance[node]
         
-        if currentLength == maxLength {
-            count += 1
-        } else {
-            count = 1 
-            maxLength = currentLength
+        if currentDistance != maxDistance {
+            count = 0
+            maxDistance = currentDistance
         }
+        count += 1
         
-        let nextLength = currentLength + 1
+        let nextDistance = currentDistance + 1
         
         for nextNodeIndex in connected[node] {
-            guard length[nextNodeIndex] == -1 else { continue }
+            guard distance[nextNodeIndex] == -1 else { continue }
             
-            length[nextNodeIndex] = nextLength
+            distance[nextNodeIndex] = nextDistance
             queue.enqueue(nextNodeIndex)
         }
     }
