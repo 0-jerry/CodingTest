@@ -40,7 +40,6 @@ final class Slot {
     
     private var isClearable: Bool {
         (elements.count >= index) && 
-        isCompleted && 
         (elementsCount[elements[index], default: 0] > 1)
     }
     
