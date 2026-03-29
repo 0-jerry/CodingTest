@@ -4,33 +4,34 @@ func solution(_ cookie: [Int]) -> Int {
     typealias Bucket = (sum: Int, start: Int, end: Int)
     var answer = 0
     let lastIndex = cookie.count-1
-    var firstBucket: Bucket = (cookie.reduce(0, +) - cookie[lastIndex], 0, lastIndex - 1)
-    var secondBucket: Bucket = (cookie[lastIndex], lastIndex, lastIndex)
     
-    while firstBucket.end >= 0, firstBucket.sum > answer {
-        var newFirstBucket = firstBucket
-        var newSecondBucket = secondBucket 
+    var left: Bucket = (cookie.reduce(0, +) - cookie[lastIndex], 0, lastIndex - 1)
+    var right: Bucket = (cookie[lastIndex], lastIndex, lastIndex)
+    
+    while left.end >= 0, left.sum > answer {
+        var newLeft = left
+        var newRight = right 
         
-        while newSecondBucket.sum > answer {
-            if newFirstBucket.sum == newSecondBucket.sum {
-                answer = newFirstBucket.sum
+        while newRight.sum > answer {
+            if newLeft.sum == newRight.sum {
+                answer = newRight.sum
                 break 
-            } else if newFirstBucket.sum < newSecondBucket.sum {
-                newSecondBucket.sum -= cookie[newSecondBucket.end]
-                newSecondBucket.end -= 1
-                if newSecondBucket.sum == 0 { break }
+            } else if newLeft.sum < newRight.sum {
+                newRight.sum -= cookie[newRight.end]
+                newRight.end -= 1
+                if newRight.sum == 0 { break }
             } else {
-                newFirstBucket.sum -= cookie[newFirstBucket.start]
-                newFirstBucket.start += 1
-                if newFirstBucket.sum == 0 { break }
+                newLeft.sum -= cookie[newLeft.start]
+                newLeft.start += 1
+                if newLeft.sum == 0 { break }
             }
         }
         
-        let centerCookie = cookie[firstBucket.end]
-        firstBucket.sum -= centerCookie
-        firstBucket.end -= 1
-        secondBucket.sum += centerCookie
-        secondBucket.start -= 1
+        let centerCookie = cookie[left.end]
+        left.sum -= centerCookie
+        left.end -= 1
+        right.sum += centerCookie
+        right.start -= 1
     }
     
     return answer
