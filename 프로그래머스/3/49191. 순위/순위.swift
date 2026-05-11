@@ -1,39 +1,51 @@
 import Foundation
 
-func solution(_ n: Int, _ results: [[Int]]) -> Int {
-
-    var front: [Set<Int>] = .init(repeating: [], count: n+1)
-    var behind: [Set<Int>] = .init(repeating: [], count: n+1)
-
-    func update(_ winner: Int, _ loser: Int) {
-        var newLoser = behind[loser]
-        newLoser.insert(loser)
-        
-        var newWinner = front[winner]
-        newWinner.insert(winner)
-        
-        for i in newWinner {
-            behind[i] = behind[i].union(newLoser)
-        }
-        
-        for i in newLoser {
-            front[i] = front[i].union(newWinner)
-        }
+func solution(_ n:Int, _ results:[[Int]]) -> Int {
+    
+    var win: [[Bool]] = {
+        let temp = [Bool](repeating: false, count: n+1) 
+        return [[Bool]](repeating: temp, count: n+1)
+    }()
+    
+    var lose = win
+    
+    func connect(_ winner: Int, _ loser: Int) {
+        win[winner][loser] = true
+        lose[loser][winner] = true
     }
     
     for result in results {
-        let winner = result[0]
-        let loser = result[1]
-        update(winner, loser)
+        connect(result[0], result[1])
     }
     
-    var answer = 0 
+    for mid in 1...n {
+        for start in 1...n {
+            for end in 1...n {
+                guard !(win[start][end] && lose[start][end]) else { continue }
+                
+                if win[start][mid] && win[mid][end] {
+                    connect(start, end)
+                } else if lose[start][mid] && lose[mid][end] {
+                    connect(end, start)
+                }
+            }
+        }
+    }
+    
+    var answer = 0
     
     for i in 1...n {
-       if (front[i].count + behind[i].count) == n-1 {
-           answer += 1
-       }
+        var connected = true 
+        for j in 1...n {
+            guard i == j || win[i][j] || lose[i][j] else {
+                connected = false
+                break
+            }
+        }
+        if connected { answer += 1 }
     }
-    
+    win.forEach {print($0)} 
+    print()
+    lose.forEach {print($0)}
     return answer
 }
