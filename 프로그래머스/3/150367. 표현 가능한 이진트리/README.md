@@ -1,10 +1,10 @@
 # [level 3] 표현 가능한 이진트리 - 150367 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/150367?language=swift) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/150367#) 
 
 ### 성능 요약
 
-메모리: 21.9 MB, 시간: 15.15 ms
+메모리: 21.5 MB, 시간: 15.85 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2026년 06월 29일 20:26:17
+2026년 06월 29일 21:09:53
 
 ### 문제 설명
 

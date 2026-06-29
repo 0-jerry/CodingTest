@@ -8,26 +8,20 @@ struct FullBinaryTree {
     init(_ value: Int) {
         var count = 0 
         var value = value
-        var maxValue = 1
         var length = 1
         var rawElements = [Bool]()
-        
-        while value > maxValue { maxValue *= 2 }
-        
-        while maxValue > 1 {
-            maxValue /= 2
-            rawElements.append(value >= maxValue)
-            if value >= maxValue {
-                count += 1
-                value -= maxValue
-            }
+        while value > 0 {
+            let isOdd = value % 2 == 1
+            if isOdd { count += 1 }
+            rawElements.append(isOdd)
+            value /= 2
         }
         
         while rawElements.count > length {
             length = (length + 1) * 2 - 1 
         }
         
-        self.elements = [Bool](repeating: false, count: length - rawElements.count) + rawElements
+        self.elements = rawElements + [Bool](repeating: false, count: length - rawElements.count)
         self.count = count 
     }
     
@@ -50,5 +44,4 @@ struct FullBinaryTree {
             return 0
         }
     }
-
 }
